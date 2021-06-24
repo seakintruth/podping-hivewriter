@@ -17,7 +17,7 @@ from beem.nodelist import NodeList
 
 from pydantic import ValidationError
 
-from podping_hivewriter.config import Config, PodpingSettings
+from podping_hivewriter.config import Config, HiveCustomJsonTx
 from podping_hivewriter.podping_config import (
     get_podping_settings,
     get_time_sorted_node_list,
@@ -71,7 +71,7 @@ async def hive_startup(ignore_errors=False, resource_test=True) -> beem.Hive:
     try:
         hive = get_hive()
         await update_podping_settings(Config.podping_settings.control_account)
-#
+    #
     except Exception as ex:
         error_messages.append(f"{ex} occurred {ex.__class__}")
         error_messages.append(f"Can not connect to Hive, probably bad key")
@@ -197,6 +197,14 @@ def get_allowed_accounts(acc_name: str = "podping") -> Set[str]:
     #     print(timer() - start)
     # return allowed
 
+
+def hive_send_thread_worker():
+    """Thread worker sending transactions to Hive"""
+
+    while True:
+        new_tx: HiveCustomJsonTx = Config.hive_tx_q.get()
+        send_notification(new_tx.data, new_tx.hive, new_tx.operation_id, new_tx.reason)
+        Config.hive_tx_q.task_done()
 
 def send_notification(
     data, hive: beem.Hive, operation_id="podping", reason=1

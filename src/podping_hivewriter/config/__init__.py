@@ -3,11 +3,14 @@ from datetime import datetime
 import os
 from enum import Enum
 from ipaddress import AddressValueError, IPv4Address, IPv6Address
+from beem import Hive
+import beem
+import queue
 
 # ---------------------------------------------------------------
 # COMMAND LINE
 # ---------------------------------------------------------------
-from typing import Tuple
+from typing import Set, Tuple
 
 from pydantic import BaseModel, validator
 
@@ -106,11 +109,21 @@ args, _ = my_parser.parse_known_args()
 my_args = vars(args)
 
 
+class HiveCustomJsonTx(BaseModel):
+    """Dataclass for holding exactly what is needed to send a Hive TX"""
+
+    data: Set
+    hive: beem.Hive
+    operation_id: str = "podping"
+    reason: int = 1
+
+
+
 class NotificationReasons(Enum):
     FEED_UPDATED = (1,)
     NEW_FEED = (2,)
     HOST_CHANGE = (3,)
-    GOING_LIVE = 4
+    GOING_LIVE = (4,)
 
 
 class PodpingSettings(BaseModel):
@@ -183,6 +196,9 @@ class Config:
         nodes_in_use = podping_settings.main_nodes
 
     startup_datetime = datetime.utcnow()
+
+    hive_tx_q = queue.Queue()
+
 
     @classmethod
     def setup(cls):
