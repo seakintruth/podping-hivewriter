@@ -26,6 +26,13 @@ async def test_write_single_url_zmq_req(event_loop):
     # Don't try to update parameters
     config.Config.ignore_updates = True
 
+    # Including the entire logic block to make clear what's going on, obviously
+    # only 1 path is needed.
+    if config.Config.test:
+        config.Config.nodes_in_use = config.Config.podping_settings.test_nodes
+    else:
+        config.Config.nodes_in_use = config.Config.podping_settings.main_nodes
+
     hive = hive_writer.get_hive()
 
     blockchain = Blockchain(mode="head", blockchain_instance=hive)
