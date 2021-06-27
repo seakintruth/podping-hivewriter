@@ -28,9 +28,9 @@ def get_hive(nodes: Tuple[str, ...] = None) -> beem.Hive:
         logging.info(f"---------------> Using Test Nodes: {nodes}")
     else:
         hive = beem.Hive(node=nodes, keys=posting_key, nobroadcast=Config.nobroadcast)
-        hive.chain_params[
-            "chain_id"
-        ] = "beeab0de00000000000000000000000000000000000000000000000000000000"
+        # hive.chain_params[
+        #     "chain_id"
+        # ] = "beeab0de00000000000000000000000000000000000000000000000000000000"
         logging.info("---------------> Using Main Hive Chain ")
     return hive
 

@@ -80,7 +80,7 @@ stevedore = ">=1.20.0"
 
 [[package]]
 name = "beem"
-version = "0.24.21"
+version = "0.24.25"
 description = "Unofficial Python library for HIVE and STEEM"
 category = "main"
 optional = false
@@ -90,8 +90,8 @@ python-versions = "*"
 appdirs = "*"
 asn1crypto = "*"
 Click = "*"
-click-shell = "*"
-diff-match-patch = "*"
+click_shell = "*"
+diff_match_patch = "*"
 ecdsa = "*"
 prettytable = "*"
 pycryptodomex = "*"
@@ -654,7 +654,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "077baf9a5665b78151ad55d236589000c6fea683187c4d6afdfacc54815dc993"
+content-hash = "727ac82d1da3e0a51fc68226597a22527f178e788adf6add34b2954f4cda34e9"
 
 [metadata.files]
 aiohttp = [
@@ -721,8 +721,7 @@ bandit = [
     {file = "bandit-1.7.0.tar.gz", hash = "sha256:8a4c7415254d75df8ff3c3b15cfe9042ecee628a1e40b44c15a98890fbfc2608"},
 ]
 beem = [
-    {file = "beem-0.24.21-py2.py3-none-any.whl", hash = "sha256:25ab5e7592ced9f8945d173ae1caa21e2865c32672c5d88a329e088e605852b5"},
-    {file = "beem-0.24.21.tar.gz", hash = "sha256:27695bee5aeaa3848089f8dbea1dae43357e9399a7b6fa044d3fc7f55472597e"},
+    {file = "beem-0.24.25.tar.gz", hash = "sha256:dfe31322daa092bbd82fbfe0b8696301b7685c8f6f686a51f403791c7c6aedfd"},
 ]
 black = [
     {file = "black-21.6b0-py3-none-any.whl", hash = "sha256:dfb8c5a069012b2ab1e972e7b908f5fb42b6bbabcba0a788b86dc05067c7d9c7"},
