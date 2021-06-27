@@ -18,13 +18,15 @@ from podping_hivewriter import config, hive_writer
 @pytest.mark.asyncio
 @pytest.mark.timeout(60)
 @pytest.mark.slow
-async def test_write_single_url_zmq_req(event_loop):
+async def test_write_single_url_zmq__livetest_req(event_loop):
     # Ensure use of Live Hive chain not the Test Net
     config.Config.test = False
     # Use the livechain
     config.Config.livetest = True
     # Don't try to update parameters
     config.Config.ignore_updates = True
+
+    config.Config.zmq = "9995"
 
     # Including the entire logic block to make clear what's going on, obviously
     # only 1 path is needed.
