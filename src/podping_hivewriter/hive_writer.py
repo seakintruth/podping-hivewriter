@@ -464,7 +464,7 @@ async def zmq_response_loop(url_queue: "asyncio.Queue[str]", loop=None):
 async def url_only_startup(url: str):
     hive = await hive_startup(resource_test=False)
 
-    await failure_retry(set(url), hive)
+    await failure_retry(url, hive)
 
 
 def task_startup(hive: beem.Hive, loop=None):
