@@ -121,6 +121,8 @@ class PodpingSettings(BaseModel):
     diagnostic_report_period: int = 60
     control_account: str = "podping"
     control_account_check_period: int = 60
+    # how long we will tolerate beem taking
+    max_beem_wait_time = 10
     test_nodes: Tuple[str, ...] = ("https://testnet.openhive.network",)
     main_nodes: Tuple[str, ...] = (
         "https://api.deathwing.me",

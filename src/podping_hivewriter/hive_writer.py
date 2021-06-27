@@ -296,6 +296,9 @@ async def send_notification_worker(
         logging.info(
             f"Task time: {duration:0.2f} - trx_id: {trx_id} - Failures: {failure_count}"
         )
+        # if sending a custom json takes longer than 10s, this node should be switched out.
+        if duration > Config.podping_settings.max_beem_wait_time:
+            hive = await new_hive_object()
 
 
 async def url_q_worker(
@@ -358,7 +361,9 @@ async def url_q_worker(
             if len(url_set):
                 await hive_queue.put(url_set)
                 Pings.total_urls_recv_deduped += len(url_set)
-                logging.info(f"Size of Urls: {urls_size_total}")
+                logging.info(
+                    f"Size of Urls: {urls_size_total} - Sending to Hive Node: {Config.nodes_in_use[0]}"
+                )
         except asyncio.CancelledError:
             raise
         except RuntimeError:
@@ -377,7 +382,7 @@ async def new_hive_object() -> beem.Hive:
     new_node_list = await rotate_node_list()
     Config.nodes_in_use = new_node_list
     hive = get_hive()
-    logging.info(f"New Hive Nodes in use: {hive}")
+    output_hive_status()
     return hive
 
 
@@ -500,6 +505,10 @@ async def update_podping_settings(acc_name: str) -> None:
         if Config.podping_settings != podping_settings:
             logging.info("Configuration override from Podping Hive")
             Config.podping_settings = podping_settings
+            if Config.test:
+                Config.nodes_in_use = Config.podping_settings.test_nodes
+            else:
+                Config.nodes_in_use = Config.podping_settings.main_nodes
 
 
 async def update_podping_settings_worker(acc_name: str) -> None:

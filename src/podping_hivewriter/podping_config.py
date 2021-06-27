@@ -83,19 +83,20 @@ async def check_hive_node(acc_name: str, node: str) -> Tuple[str, float]:
 async def test_send_custom_json(acc_name: str, node: str) -> Tuple[str, float]:
     """Builds but doesn't send a custom_json not async."""
     start = timer()
-    try:
-        hive = beem.Hive(node=node, nobroadcast=True, wif=Config.posting_key)
-        data = {"something": "here"}
-        tx = hive.custom_json(
-            id="podping-testing",
-            json_data=data,
-            required_posting_auths=[Config.server_account],
-        )
-    except Exception as ex:
-        logging.warning(f"Node: {node} - Error: {ex}")
-        return node, False
-    elapsed = timer() - start
-    logging.info(f"Node: {node} - Elapsed: {elapsed}")
+    for _ in range(3):
+        try:
+            hive = beem.Hive(node=node, nobroadcast=True, wif=Config.posting_key)
+            data = {"something": "here"}
+            tx = hive.custom_json(
+                id="podping-testing",
+                json_data=data,
+                required_posting_auths=[Config.server_account],
+            )
+        except Exception as ex:
+            logging.warning(f"Node: {node} - Error: {ex}")
+            return node, False
+        elapsed = timer() - start
+        logging.info(f"Node: {node} - Elapsed: {elapsed}")
 
     return node, elapsed
 
