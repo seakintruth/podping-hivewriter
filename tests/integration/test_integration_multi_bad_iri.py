@@ -73,13 +73,13 @@ async def test_write_multiple_bad_iri_zmq_req(event_loop):
     socket.connect(f"tcp://127.0.0.1:{config.Config.zmq}")
 
     all_responses = []
-    for n in range(num_urls*2):
+    for n in range(num_urls * 2):
         await socket.send_string(test_urls[n])
         response = await socket.recv_string()
         all_responses.append(response)
         # assert response == "OK"
 
-    answer_count = {i:all_responses.count(i) for i in all_responses}
+    answer_count = {i: all_responses.count(i) for i in all_responses}
     assert answer_count["OK"] == num_urls
     assert answer_count["Invalid IRI"] == num_urls
 
