@@ -1,3 +1,4 @@
+import asyncio
 from typing import Tuple
 
 from pydantic import BaseModel, validator
@@ -34,3 +35,12 @@ class PodpingSettings(BaseModel):
         if v < 1:
             v = 1
         return v
+
+
+# class PodpingSettingsWrapper(PodpingSettings):
+#     """Wrapper to call and update podping settings perii"""
+#     def __init__(__pydantic_self__, **data: Any) -> None:
+#         super().__init__(**data)
+#         self._tasks: List[asyncio.Task] = []
+
+#         self._
