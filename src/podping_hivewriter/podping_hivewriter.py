@@ -394,7 +394,7 @@ class PodpingHivewriter:
         self, iri_set: Set[str], failure_count=0
     ) -> Tuple[str, int]:
         await self.wait_startup()
-        #TODO: #7 this should write to a file called failures that can be processed later.
+        # TODO: #7 this should write to a file called failures that can be processed later.
         if failure_count >= len(Config.HALT_TIME):
             print(f"Failure at: {datetime.utcnow()}")
             logging.error(f"Failed to send: {len(iri_set)} iri - Printing to STDOUT")
