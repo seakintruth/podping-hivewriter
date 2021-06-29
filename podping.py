@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from podping_hivewriter import run
+from podping_hivewriter import config, run
 
 
 async def run_podping_hive():
@@ -19,13 +19,16 @@ async def run_podping_hive():
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    main_task = loop.create_task(run_podping_hive())
-    try:
-        loop.run_forever()
-    except KeyboardInterrupt:
-        raise
-    except asyncio.CancelledError:
-        raise
-    finally:
-        loop.close()
+    if config.Config.url:
+        run.run()
+    else:
+        loop = asyncio.get_event_loop()
+        main_task = loop.create_task(run_podping_hive())
+        try:
+            loop.run_forever()
+        except KeyboardInterrupt:
+            raise
+        except asyncio.CancelledError:
+            raise
+        finally:
+            loop.close()

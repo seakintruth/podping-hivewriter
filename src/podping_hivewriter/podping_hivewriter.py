@@ -76,7 +76,11 @@ class PodpingHivewriter:
         self.iri_queue: "asyncio.Queue[str]" = asyncio.Queue()
 
         self._startup_done = False
-        asyncio.ensure_future(self._startup(resource_test=resource_test))
+        if not Config.url:
+            asyncio.ensure_future(self._startup(resource_test=resource_test))
+
+    def __enter__(self):
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
@@ -200,7 +204,7 @@ class PodpingHivewriter:
         self._startup_done = True
 
     async def wait_startup(self):
-        while not self._startup_done:
+        while not self._startup_done or Config.url:
             await asyncio.sleep(Config.podping_settings.hive_operation_period)
 
     async def _hive_status_loop(self):
@@ -393,7 +397,8 @@ class PodpingHivewriter:
     async def failure_retry(
         self, iri_set: Set[str], failure_count=0
     ) -> Tuple[str, int]:
-        await self.wait_startup()
+        if not Config.url:
+            await self.wait_startup()
         # TODO: #7 this should write to a file called failures that can be processed later.
         if failure_count >= len(Config.HALT_TIME):
             print(f"Failure at: {datetime.utcnow()}")
