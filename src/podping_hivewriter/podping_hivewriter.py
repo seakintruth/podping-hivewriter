@@ -17,7 +17,7 @@ from beem.exceptions import AccountDoesNotExistsException, MissingKeyError
 from beemapi.exceptions import UnhandledRPCError
 from beem.nodelist import NodeList
 from podping_hivewriter.exceptions import PodpingCustomJsonPayloadExceeded
-from podping_hivewriter.hive_wrapper import HiveWrapper
+from podping_hivewriter.hive_wrapper import HiveWrapper, get_hive
 from podping_hivewriter.models.iri_batch import IRIBatch
 
 from pydantic import ValidationError
@@ -25,6 +25,7 @@ from pydantic import ValidationError
 from podping_hivewriter.config import Config
 from podping_hivewriter.models.podping_settings import PodpingSettings
 from podping_hivewriter.constants import (
+    SERVER_ACCOUNT_NOT_AUTHORISED_TO_PODPING,
     STARTUP_OPERATION_ID,
     STARTUP_FAILED_UNKNOWN_EXIT_CODE,
     STARTUP_FAILED_INVALID_POSTING_KEY_EXIT_CODE,
@@ -65,7 +66,7 @@ class PodpingHivewriter:
         self.use_testnet = use_testnet
 
         self.hive_wrapper = HiveWrapper(
-            nodes, posting_key, daemon=daemon, use_testnet=use_testnet
+            nodes, posting_key, server_account, daemon=daemon, use_testnet=use_testnet
         )
 
         self.total_iris_recv = 0
@@ -107,11 +108,7 @@ class PodpingHivewriter:
         try:
             hive = await self.hive_wrapper.get_hive()
             account = Account(self.server_account, blockchain_instance=hive, lazy=True)
-            allowed = get_allowed_accounts()
-            if self.server_account not in allowed:
-                logging.error(
-                    f"Account @{self.server_account} not authorised to send Podpings"
-                )
+            self.hive_wrapper.recheck_allowed_accounts()
         except AccountDoesNotExistsException:
             logging.error(
                 f"Hive account @{self.server_account} does not exist, "
@@ -175,7 +172,7 @@ class PodpingHivewriter:
                         "Startup of Podping status: FAILED!  API error",
                         exc_info=True,
                     )
-                    logging.info("Exiting")
+                    logging.error("Exiting")
                     sys.exit(STARTUP_FAILED_HIVE_API_ERROR_EXIT_CODE)
                 elif Config.test:
                     logging.warning("Ignoring unknown error in test mode")
@@ -433,19 +430,3 @@ class PodpingHivewriter:
             # Since this is endless recursion, this could theoretically fail with
             # enough retries ... (python doesn't optimize tail recursion)
             return await self.failure_retry(iri_set, failure_count + 1)
-
-
-def get_allowed_accounts(acc_name: str = "podping") -> Set[str]:
-    """get a list of all accounts allowed to post by acc_name (podping)
-    and only react to these accounts"""
-
-    # Ignores test node.
-    nodes = Config.podping_settings.main_nodes
-    try:
-        hive = beem.Hive(node=nodes)
-        master_account = Account(acc_name, blockchain_instance=hive, lazy=True)
-        return set(master_account.get_following())
-    except Exception:
-        logging.error(
-            f"Allowed Account: {acc_name} - Failure on Node: {nodes[0]}", exc_info=True
-        )
