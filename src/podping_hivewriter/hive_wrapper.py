@@ -103,10 +103,15 @@ class HiveWrapper:
             except asyncio.CancelledError:
                 raise
 
-    async def recheck_allowed_accounts(self):
-        if not await self.get_allowed_accounts():
+    async def recheck_allowed_accounts(self, acc_name: str = None) -> bool:
+        """Returns True if valid podping account, Sys.exit if not"""
+        if not acc_name:
+            acc_name = config.Config.podping_settings.control_account
+        if await self.get_allowed_accounts(acc_name):
+            return True
+        else:
             logging.error(
-                f"FATAL: {self.server_account} is not Podping! Contact @podping on Hive"
+                f"FATAL: {acc_name} is not Podping! Contact @podping on Hive"
             )
             logging.error("Exiting")
             sys.exit(SERVER_ACCOUNT_NOT_AUTHORISED_TO_PODPING)
@@ -126,10 +131,11 @@ class HiveWrapper:
         async with self._hive_lock:
             return self._hive
 
-    async def get_allowed_accounts(self, acc_name: str = "podping") -> bool:
+    async def get_allowed_accounts(self, acc_name: str = None) -> bool:
         """get a list of all accounts allowed to post by acc_name (podping)
         and only react to these accounts. Returns True if server_account is in the list"""
-
+        if not acc_name:
+            acc_name = config.Config.podping_settings.control_account
         # Ignores test node.
         previous_allowed = set()
         if self.allowed_accounts:
