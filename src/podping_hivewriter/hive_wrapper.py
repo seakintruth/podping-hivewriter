@@ -22,7 +22,7 @@ def get_hive(nodes: Iterable[str], posting_key: str, use_testnet=False) -> beem.
     if use_testnet:
         logging.info(f"---------------> Using Test Node: {nodes[:2]}")
     else:
-        logging.info(f"---------------> Using Main Hive Chain: {nodes[:2]}")
+        logging.info(f"---------------> Using Main Hive Chain: {nodes[:3]}")
 
     return hive
 
@@ -84,7 +84,7 @@ class HiveWrapper:
 
     async def rotate_nodes(self):
         async with self._hive_lock:
-            self.nodes.rotate(1)
+            self.nodes.rotate(-1)
             self._hive = get_hive(
                 self.nodes, self.posting_key, use_testnet=self.use_testnet
             )
