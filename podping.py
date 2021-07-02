@@ -3,8 +3,11 @@ import logging
 
 from podping_hivewriter import config, run
 
+"""Stand alone command line front end for writing podpings"""
+
 
 async def run_podping_hive():
+    """Main function running the loop for Podping HiveWriter"""
     podping_hivewriter, _ = run.run()
     await podping_hivewriter.wait_startup()
     if podping_hivewriter._startup_done:
