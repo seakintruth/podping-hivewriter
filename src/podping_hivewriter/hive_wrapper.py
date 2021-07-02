@@ -110,9 +110,7 @@ class HiveWrapper:
         if await self.get_allowed_accounts(acc_name):
             return True
         else:
-            logging.error(
-                f"FATAL: {acc_name} is not Podping! Contact @podping on Hive"
-            )
+            logging.error(f"FATAL: {acc_name} is not Podping! Contact @podping on Hive")
             logging.error("Exiting")
             sys.exit(SERVER_ACCOUNT_NOT_AUTHORISED_TO_PODPING)
 
