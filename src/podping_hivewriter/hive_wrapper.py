@@ -20,9 +20,9 @@ def get_hive(nodes: Iterable[str], posting_key: str, use_testnet=False) -> beem.
     hive = beem.Hive(node=nodes, keys=posting_key, nobroadcast=Config.nobroadcast)
 
     if use_testnet:
-        logging.info(f"---------------> Using Test Nodes: {nodes}")
+        logging.info(f"---------------> Using Test Node: {nodes[:2]}")
     else:
-        logging.info(f"---------------> Using Main Hive Chain: {nodes}")
+        logging.info(f"---------------> Using Main Hive Chain: {nodes[:2]}")
 
     return hive
 
