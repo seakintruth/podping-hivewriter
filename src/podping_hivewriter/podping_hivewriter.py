@@ -318,6 +318,7 @@ class PodpingHivewriter:
                     await socket.send_string("OK")
                 else:
                     await socket.send_string("Invalid IRI")
+                    logging.WARNING(f"Invalid IRI received: {iri}")
             except asyncio.CancelledError:
                 socket.close()
                 raise
@@ -386,7 +387,7 @@ class PodpingHivewriter:
 
         tx_id = await self.send_notification(payload)
 
-        logging.info(f"Transaction sent: {tx_id} - Num IRIs: {num_iris}")
+        logging.debug(f"Transaction sent: {tx_id} - Num IRIs: {num_iris}")
         self.total_iris_sent += num_iris
 
         return tx_id
