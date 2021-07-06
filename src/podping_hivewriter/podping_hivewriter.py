@@ -318,7 +318,7 @@ class PodpingHivewriter:
                     await socket.send_string("OK")
                 else:
                     await socket.send_string("Invalid IRI")
-                    logging.WARNING(f"Invalid IRI received: {iri}")
+                    logging.warning(f"Invalid IRI received: {iri}")
             except asyncio.CancelledError:
                 socket.close()
                 raise
