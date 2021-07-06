@@ -16,7 +16,7 @@ from podping_hivewriter.hive_wrapper import get_hive
 
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(240)
+@pytest.mark.timeout(60)
 @pytest.mark.slow
 async def test_write_multiple_url_zmq_req(event_loop):
     # Ensure use of Live Hive chain not the Test Net
