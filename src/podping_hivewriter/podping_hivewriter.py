@@ -316,6 +316,11 @@ class PodpingHivewriter:
                     await self.iri_queue.put(iri)
                     self.total_iris_recv += 1
                     await socket.send_string("OK")
+                elif iri == "Who are you? Who, who, who, who?":
+                    await socket.send_string(
+                        f"I woke up in a Soho doorway, A policeman knew my name: @{self.server_account}"
+                    )
+                    logging.info("Server identity requested and supplied")
                 else:
                     await socket.send_string("Invalid IRI")
                     logging.warning(f"Invalid IRI received: {iri}")

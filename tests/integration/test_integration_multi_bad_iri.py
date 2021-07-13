@@ -12,7 +12,8 @@ from podping_hivewriter import config, run
 from podping_hivewriter.config import Config
 from podping_hivewriter.hive_wrapper import get_hive
 
-# Simulated multi podping writes with random gaps.
+# Simulated multi podping writes with random gaps and bad addresses
+# Also test the Who Are You server response
 
 
 @pytest.mark.asyncio
@@ -71,6 +72,12 @@ async def test_write_multiple_bad_iri_zmq_req(event_loop):
     context = zmq.asyncio.Context()
     socket = context.socket(zmq.REQ, io_loop=event_loop)
     socket.connect(f"tcp://127.0.0.1:{config.Config.zmq}")
+
+    # Test the Who Are You response?
+    await socket.send_string("Who are you? Who, who, who, who?")
+    response = await socket.recv_string()
+    assert response == f"I woke up in a Soho doorway, A policeman knew my name: @{config.Config.server_account}"
+
 
     all_responses = []
     for n in range(num_urls * 2):
