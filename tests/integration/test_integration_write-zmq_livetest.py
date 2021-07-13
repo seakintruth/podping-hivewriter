@@ -63,6 +63,14 @@ async def test_write_single_url_zmq_req(event_loop):
     socket = context.socket(zmq.REQ, io_loop=event_loop)
     socket.connect(f"tcp://127.0.0.1:{config.Config.zmq}")
 
+    # Test the Who Are You response?
+    await socket.send_string("Who are you? Who, who, who, who?")
+    response = await socket.recv_string()
+    assert (
+        response
+        == f"I woke up in a Soho doorway, A policeman knew my name: @{config.Config.server_account}"
+    )
+
     await socket.send_string(url)
     response = await socket.recv_string()
 

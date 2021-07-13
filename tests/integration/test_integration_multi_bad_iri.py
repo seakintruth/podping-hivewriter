@@ -76,8 +76,10 @@ async def test_write_multiple_bad_iri_zmq_req(event_loop):
     # Test the Who Are You response?
     await socket.send_string("Who are you? Who, who, who, who?")
     response = await socket.recv_string()
-    assert response == f"I woke up in a Soho doorway, A policeman knew my name: @{config.Config.server_account}"
-
+    assert (
+        response
+        == f"I woke up in a Soho doorway, A policeman knew my name: @{config.Config.server_account}"
+    )
 
     all_responses = []
     for n in range(num_urls * 2):
