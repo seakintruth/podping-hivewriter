@@ -320,7 +320,9 @@ class PodpingHivewriter:
                     await socket.send_string(
                         f"I woke up in a Soho doorway, A policeman knew my name: @{self.server_account}"
                     )
-                    logging.info("I'm a Podping Wizard: server identity requested and supplied")
+                    logging.info(
+                        "I'm a Podping Wizard: server identity requested and supplied"
+                    )
                 else:
                     await socket.send_string("Invalid IRI")
                     logging.warning(f"Invalid IRI received: {iri}")
