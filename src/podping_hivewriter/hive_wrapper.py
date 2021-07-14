@@ -93,11 +93,10 @@ class HiveWrapper:
     async def _recheck_allowed_accounts_loop(self):
         while True:
             try:
+                await self.recheck_allowed_accounts()
                 await asyncio.sleep(
                     10 * Config.podping_settings.diagnostic_report_period
                 )
-                await self.recheck_allowed_accounts()
-
             except Exception as e:
                 logging.error(e, exc_info=True)
             except asyncio.CancelledError:
